@@ -12,18 +12,20 @@ import {
   type DragEndEvent,
   type DropAnimation,
 } from '@dnd-kit/core';
-import { sortableKeyboardCoordinates, arrayMove } from '@dnd-kit/sortable';
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import Column from './column.tsx';
 import { INITIAL_TASKS } from '../../data/tasks.ts';
 import { findBoardSectionContainer, initializeBoard } from '../../utils/board.ts';
 import { useState } from 'react';
 import { getTaskById } from '../../utils/tasks.ts';
 import TaskCard from './task-card.tsx';
+import { produce } from 'immer';
+import type { BoardSections, Task } from '../../utils/types.ts';
 
 const KanbanBoard = () => {
   const tasks = INITIAL_TASKS;
   const initialBoardSections = initializeBoard(INITIAL_TASKS);
-  const [boardSections, setBoardSections] = useState<any>(initialBoardSections);
+  const [boardSections, setBoardSections] = useState<BoardSections>(initialBoardSections);
 
   const [activeTaskId, setActiveTaskId] = useState<null | string>(null);
 
@@ -38,53 +40,31 @@ const KanbanBoard = () => {
     setActiveTaskId(active.id as string);
   };
 
-  const handleDragOver = ({ active, over }: DragOverEvent) => {
-    // Find the containers
-    const activeContainer = findBoardSectionContainer(boardSections, active.id as string);
-    const overContainer = findBoardSectionContainer(boardSections, over?.id as string);
+  const moveTask = (board: BoardSections, activeId: string, overId: string) => {
+    return produce(board, (draft: BoardSections) => {
+      const activeContainer = findBoardSectionContainer(draft, activeId);
+      const overContainer = findBoardSectionContainer(draft, overId);
 
-    if (!activeContainer || !overContainer || activeContainer === overContainer) {
-      return;
-    }
+      if (!activeContainer || !overContainer) return;
 
-    setBoardSections((boardSection: any) => {
-      const activeItems = boardSection[activeContainer];
-      const overItems = boardSection[overContainer];
+      const activeIndex = draft[activeContainer].findIndex((t: Task) => t.id === activeId);
+      const overIndex = draft[overContainer].findIndex((t: Task) => t.id === overId);
 
-      // Find the indexes for the items
-      const activeIndex = activeItems.findIndex((item: any) => item.id === active.id);
-      const overIndex = overItems.findIndex((item: any) => item.id !== over?.id);
+      if (activeIndex === -1 || overIndex === -1) return;
 
-      return {
-        ...boardSection,
-        [activeContainer]: [...boardSection[activeContainer].filter((item: any) => item.id !== active.id)],
-        [overContainer]: [
-          ...boardSection[overContainer].slice(0, overIndex),
-          boardSections[activeContainer][activeIndex],
-          ...boardSection[overContainer].slice(overIndex, boardSection[overContainer].length),
-        ],
-      };
+      const [movedItem] = draft[activeContainer].splice(activeIndex, 1);
+      draft[overContainer].splice(overIndex, 0, movedItem);
     });
   };
 
+  const handleDragOver = ({ active, over }: DragOverEvent) => {
+    if (!over) return;
+    setBoardSections((board) => moveTask(board, active.id as string, over.id as string));
+  };
+
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
-    const activeContainer = findBoardSectionContainer(boardSections, active.id as string);
-    const overContainer = findBoardSectionContainer(boardSections, over?.id as string);
-
-    if (!activeContainer || !overContainer || activeContainer !== overContainer) {
-      return;
-    }
-
-    const activeIndex = boardSections[activeContainer].findIndex((task: any) => task.id === active.id);
-    const overIndex = boardSections[overContainer].findIndex((task: any) => task.id === over?.id);
-
-    if (activeIndex !== overIndex) {
-      setBoardSections((boardSection: any) => ({
-        ...boardSection,
-        [overContainer]: arrayMove(boardSection[overContainer], activeIndex, overIndex),
-      }));
-    }
-
+    if (!over) return;
+    setBoardSections((board) => moveTask(board, active.id as string, over.id as string));
     setActiveTaskId(null);
   };
 
