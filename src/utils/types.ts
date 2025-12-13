@@ -1,9 +1,13 @@
 export type Priority = 'low' | 'medium' | 'high' | 'urgent';
-export type Status = 'todo' | 'in-progress' | 'in-review' | 'done' | 'blocked';
+export type Status = 'backlog' | 'todo' | 'progress' | 'done' | 'blocked';
 
 export type Assignee = {
   name: string;
   avatarUrl?: string;
+};
+
+export type BoardSections = {
+  [name: string]: Task[];
 };
 
 export type Task = {

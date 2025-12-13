@@ -31,10 +31,16 @@ export default function NavBar(): JSX.Element {
         </Link>
 
         <div className='flex items-center justify-end gap-3'>
-          <Avatar name={auth.user!.name || auth.user!.email} avatarUrl={auth.user!.avatarUrl} rtl={true} />
-          <button onClick={handleLogout} className='btn btn-sm btn-outline btn-error'>
-            Logout
-          </button>
+          {auth.user && (
+            <>
+              <Avatar name={auth.user.name || auth.user.email} avatarUrl={auth.user.avatarUrl} rtl />
+
+              <button onClick={handleLogout} className='btn btn-sm btn-outline btn-error'>
+                Logout
+              </button>
+            </>
+          )}
+
           <ThemeSwitcher />
         </div>
       </div>

@@ -1,33 +1,23 @@
-import { lazy } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from '../App';
-import NonAuthGuard from '../guards/non-auth-guard.tsx';
-import AuthGuard from '../guards/auth-guard.tsx';
-
-const DashboardRoutes = lazy(() => import('./dashboard'));
-const AuthRoutes = lazy(() => import('./auth'));
-const NotFound = lazy(() => import('../pages/not-found'));
+import AuthGuard from '../guards/auth-guard';
+import NonAuthGuard from '../guards/non-auth-guard';
+import NotFound from '../pages/not-found';
+import ErrorFallback from '../components/error-fallback';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+    errorElement: <ErrorFallback />,
     children: [
       {
         path: 'dashboard/*',
-        element: (
-          <AuthGuard>
-            <DashboardRoutes />
-          </AuthGuard>
-        ),
+        element: <AuthGuard />,
       },
       {
         path: 'login/*',
-        element: (
-          <NonAuthGuard>
-            <AuthRoutes />
-          </NonAuthGuard>
-        ),
+        element: <NonAuthGuard />,
       },
       { index: true, element: <Navigate to='dashboard' replace /> },
       { path: '*', element: <NotFound /> },

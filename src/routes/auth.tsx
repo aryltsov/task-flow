@@ -1,7 +1,8 @@
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import Loader from '../components/loader.tsx';
 
-const LoginPage = lazy(() => import('../pages/login/login'));
+const LoginPage = lazy(() => import('../pages/login.tsx'));
 
 export default function AuthRoutes() {
   return (
@@ -9,7 +10,7 @@ export default function AuthRoutes() {
       <Route
         index
         element={
-          <Suspense fallback={<div>Загрузка...</div>}>
+          <Suspense fallback={<Loader text='Loading Auth routes...' />}>
             <LoginPage />
           </Suspense>
         }

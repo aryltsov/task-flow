@@ -7,7 +7,7 @@ export default function Dashboard(): JSX.Element {
     <>
       <NavBar />
 
-      <main role='main' className='w-full p-0'>
+      <main role='main' className='w-full overflow-x-scroll p-3'>
         <KanbanBoard />
       </main>
     </>

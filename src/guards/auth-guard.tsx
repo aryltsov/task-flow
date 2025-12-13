@@ -1,10 +1,11 @@
-import { type ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/use-auth.hook.ts';
+import { useAuth } from '../hooks/use-auth.hook';
+import DashboardRoutes from '../routes/dashboard.tsx';
 
-export default function AuthGuard({ children }: { children: ReactNode }) {
-  const { isAuthenticated, initialized } = useAuth();
-  if (!initialized) return null;
+export default function AuthGuard() {
+  const { isAuthenticated } = useAuth();
+
   if (!isAuthenticated) return <Navigate to='/login' replace />;
-  return <>{children}</>;
+
+  return <DashboardRoutes />;
 }

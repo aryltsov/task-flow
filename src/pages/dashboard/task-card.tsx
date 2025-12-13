@@ -1,33 +1,15 @@
 import type { JSX } from 'react';
-import type { Priority, Status, TaskCardProps } from '../../utils/types.ts';
+import type { Priority, TaskCardProps } from '../../utils/types.ts';
 import Avatar from '../../components/avatar.tsx';
 
 const PRIORITY_MAP: Record<Priority, { label: string; cls: string }> = {
-  low: { label: 'Low', cls: 'badge-success' },
-  medium: { label: 'Medium', cls: 'badge-warning' },
-  high: { label: 'High', cls: 'badge-error' },
-  urgent: { label: 'Urgent', cls: 'badge-error badge-outline' },
+  low: { label: 'Low', cls: 'badge-secondary' },
+  medium: { label: 'Medium', cls: 'badge-info' },
+  high: { label: 'High', cls: 'badge-warning' },
+  urgent: { label: 'Urgent', cls: 'badge-error' },
 };
 
-const STATUS_MAP: Record<Status, string> = {
-  todo: 'To Do',
-  'in-progress': 'In Progress',
-  'in-review': 'In Review',
-  done: 'Done',
-  blocked: 'Blocked',
-};
-
-export default function TaskCard({
-  id,
-  title,
-  description,
-  priority = 'medium',
-  status = 'todo',
-  assignee = null,
-  dueDate,
-  onStatusChange,
-  onClick,
-}: TaskCardProps): JSX.Element {
+export default function TaskCard({ id, title, description, priority = 'medium', assignee = null, dueDate, onClick }: TaskCardProps): JSX.Element {
   const dueText = dueDate ? new Date(dueDate).toLocaleDateString() : null;
 
   const priorityBadge = PRIORITY_MAP[priority] && (
@@ -40,7 +22,7 @@ export default function TaskCard({
 
   return (
     <article
-      className='w-[350px] card card-compact bg-base-100 shadow-sm hover:shadow-md transition-shadow duration-150 cursor-pointer'
+      className='w-full card card-compact bg-base-100 shadow-sm hover:shadow-md transition-shadow duration-150 cursor-pointer overflow-hidden'
       onClick={() => onClick?.(id)}
       role='button'
       aria-labelledby={`task-${id}-title`}>
@@ -48,37 +30,21 @@ export default function TaskCard({
         <div className='flex items-start justify-between gap-3'>
           <div className='flex items-center gap-3 min-w-0'>
             <div className='flex flex-col'>
-              <h3 id={`task-${id}-title`} className='text-base font-semibold truncate'>
+              <h3 id={`task-${id}-title`} className='text-base font-semibold w-[235px] line-clamp-3 break-words'>
                 {title}
               </h3>
-              {description && <p className='text-sm text-muted truncate max-w-[40ch]'>{description}</p>}
+              {description && <p className='text-sm text-base-content/70 w-[235px] line-clamp-2 break-words'>{description}</p>}
             </div>
           </div>
 
-          <div className='flex items-center gap-2'>
+          <div className='flex flex-col items-end gap-2'>
+            {dueText && <p className='text-xs text-muted'>{dueText}</p>}
             {priorityBadge}
-            {dueText && <span className='text-xs text-muted'>{dueText}</span>}
           </div>
         </div>
 
-        <div className='flex items-center justify-between mt-3 gap-3'>
+        <div className='flex items-center justify-between mt-4 gap-3'>
           <div className='flex items-center gap-3'>{assigneeInfo}</div>
-
-          <div className='flex items-center gap-2'>
-            <select
-              className='select select-sm select-bordered'
-              value={status}
-              onChange={(e) => onStatusChange?.(id, e.target.value as Status)}
-              aria-label='Change task status'
-              onClick={(e) => e.stopPropagation()}>
-              {Object.entries(STATUS_MAP).map(([key, label]) => (
-                <option key={key} value={key}>
-                  {label}
-                </option>
-              ))}
-            </select>
-            <span className='text-xs px-2 py-1 rounded-md bg-base-200 text-muted'>{STATUS_MAP[status]}</span>
-          </div>
         </div>
       </div>
     </article>

@@ -1,10 +1,10 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
 
-export type User = { email: string; password: string } | null;
+export type User = { email: string; password: string; name?: string; avatarUrl?: string } | null;
 
+// todo move interface to separate file
 export interface AuthContextType {
   user: User;
-  initialized: boolean;
   isAuthenticated: boolean;
   login: (userData: User) => Promise<void>;
   logout: () => void;
@@ -28,8 +28,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const initialUser = getCurrentUserSync();
   const [user, setUser] = useState<User>(initialUser);
 
-  const initialized = true;
-
   useEffect(() => {
     saveUser(user);
   }, [user]);
@@ -48,7 +46,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         user,
-        initialized,
         isAuthenticated: !!user,
         login,
         logout,

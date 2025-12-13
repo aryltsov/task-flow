@@ -1,37 +1,34 @@
-import type { JSX } from 'react';
-import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
-import type { Task } from '../../utils/types.ts';
-import TaskCard from './task-card.tsx';
+import { CSS } from '@dnd-kit/utilities';
 
-type Props = {
-  task: Task;
-  index: number;
-};
+export function Item(props: any) {
+  const { id } = props;
 
-export default function SortableTask({ task }: Props): JSX.Element {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: task.id,
-  });
+  const style = {
+    width: '100%',
+    height: 50,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: '1px solid black',
+    margin: '10px 0',
+    background: 'white',
+  };
+
+  return <div style={style}>{id}</div>;
+}
+
+export default function SortableTask(props: any) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: props.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: isDragging ? 999 : undefined,
-  } as const;
+  };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className='mb-2'>
-      <TaskCard
-        id={task.id}
-        title={task.title}
-        description={task.description}
-        priority={task.priority}
-        status={task.status}
-        assignee={task.assignee}
-        dueDate={task.dueDate}
-        onClick={() => {}}
-      />
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <Item id={props.id} />
     </div>
   );
 }

@@ -58,6 +58,7 @@ export function useKanbanColumns(): UseKanbanColumnsResult {
     const srcList = [...columns[srcCol]];
     const destList = [...columns[destCol]];
 
+    console.log('overId', overId);
     const oldIndex = srcList.findIndex((t) => t.id === activeId);
     const destIndex = overId.startsWith('column-') ? destList.length : destList.findIndex((t) => t.id === overId);
 

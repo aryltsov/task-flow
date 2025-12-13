@@ -1,32 +1,40 @@
-import type { JSX } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import type { Task, Status } from '../../utils/types.ts';
-import SortableTask from './sortable-task.tsx';
+import type { Task } from '../../utils/types.ts';
+import TaskCard from './task-card.tsx';
+import SortableTaskItem from './sortable-task-item.tsx';
 
-type Props = {
-  id: Status;
+type BoardSectionProps = {
+  id: string;
   title: string;
   tasks: Task[];
 };
 
-export default function Column({ id, title, tasks }: Props): JSX.Element {
-  const { setNodeRef } = useDroppable({ id: `column-${id}` });
+const Column = ({ id, title, tasks }: BoardSectionProps) => {
+  const { setNodeRef } = useDroppable({
+    id,
+  });
 
   return (
-    <div ref={setNodeRef} className='flex flex-col bg-base-200 rounded-md p-3 gap-3 min-w-[374px]' aria-label={title}>
+    <div className='flex flex-col bg-base-200 rounded-md p-3 gap-3 w-[390px]' aria-label={title}>
       <div className='flex items-center justify-between mb-1'>
         <h4 className='font-semibold'>{title}</h4>
         <span className='text-sm text-muted'>{tasks.length}</span>
       </div>
 
-      <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-        <div className='flex flex-col gap-2'>
-          {tasks.map((t, i) => (
-            <SortableTask key={t.id} task={t} index={i} />
+      <SortableContext id={id} items={tasks} strategy={verticalListSortingStrategy}>
+        <div className='w-full' ref={setNodeRef}>
+          {tasks.map((task) => (
+            <div key={task.id} className='mb-2'>
+              <SortableTaskItem id={task.id}>
+                <TaskCard {...task} />
+              </SortableTaskItem>
+            </div>
           ))}
         </div>
       </SortableContext>
     </div>
   );
-}
+};
+
+export default Column;
