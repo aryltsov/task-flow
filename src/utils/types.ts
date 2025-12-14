@@ -2,9 +2,12 @@ export type Priority = 'low' | 'medium' | 'high' | 'urgent';
 export type Status = 'backlog' | 'todo' | 'progress' | 'done' | 'blocked';
 
 export type Assignee = {
+  id: string;
   name: string;
   avatarUrl?: string;
 };
+
+type Creator = Assignee;
 
 export type BoardSections = {
   [name: string]: Task[];
@@ -12,7 +15,7 @@ export type BoardSections = {
 
 export type Task = {
   id: string;
-  creator: string;
+  creator: Creator;
   title: string;
   description?: string;
   priority?: Priority;

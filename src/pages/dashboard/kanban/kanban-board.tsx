@@ -27,12 +27,11 @@ const KanbanBoard = () => {
   const [activeTaskId, setActiveTaskId] = useState<null | string>(null);
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
 
-  // Получаем таски при монтировании
+  // todo fix multiple rerender
   useEffect(() => {
     getTasks();
   }, [getTasks]);
 
-  // Инициализация boardSections после получения тасок
   useEffect(() => {
     if (tasks.length) {
       setBoardSections(initializeBoard(tasks));

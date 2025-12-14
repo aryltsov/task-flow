@@ -15,14 +15,14 @@ export const useTaskStore = create<TaskState>((set) => ({
   tasks: [],
   currentTask: null,
   loadingTasks: false,
-  loadingTask: false,
+  loadingTask: true,
 
   getTasks: async () => {
     set({ loadingTasks: true });
     try {
       const tasks = await taskService.getTasks();
-      set({ tasks });
-    } finally {
+      set({ tasks, loadingTasks: false });
+    } catch (e) {
       set({ loadingTasks: false });
     }
   },
@@ -31,8 +31,8 @@ export const useTaskStore = create<TaskState>((set) => ({
     set({ loadingTask: true });
     try {
       const task = await taskService.getTaskById(id);
-      set({ currentTask: task });
-    } finally {
+      set({ currentTask: task, loadingTask: false });
+    } catch (e) {
       set({ loadingTask: false });
     }
   },

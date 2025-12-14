@@ -14,24 +14,39 @@ type TaskViewProps = {
 export default function ViewTask({ task, comments, onClose }: TaskViewProps) {
   return (
     <div className='w-full max-w-lg mx-auto'>
-      <h2 className='text-2xl font-bold mb-2'>{task.title}</h2>
+      <h2 className='text-2xl font-bold text-gray-800 mb-2'>{task.title}</h2>
 
-      <p className='text-gray-700 mb-4'>{task.description || '-'}</p>
+      <p className='text-gray-600 mb-6'>{task.description || 'No description provided.'}</p>
 
-      <div className='grid grid-cols-2 gap-4 mb-4'>
-        <PriorityBadge priority={task.priority} />
-        <StatusBadge status={task.status} />
+      <div className='grid grid-cols-2 gap-4 mb-6'>
+        <div className='flex flex-col'>
+          <span className='text-gray-500 text-sm mb-1'>Assignee</span>
+          <AssigneeInfo assignee={task.assignee} />
+        </div>
+        <div className='flex flex-col'>
+          <span className='text-gray-500 text-sm mb-1'>Author</span>
+          <AssigneeInfo assignee={task.creator} />
+        </div>
+        <div className='flex flex-col'>
+          <span className='text-gray-500 text-sm mb-1'>Priority</span>
+          <PriorityBadge priority={task.priority} />
+        </div>
+        <div className='flex flex-col'>
+          <span className='text-gray-500 text-sm mb-1'>Status</span>
+          <StatusBadge status={task.status} />
+        </div>
+        <div className='flex flex-col col-span-2'>
+          <span className='text-gray-500 text-sm mb-1'>Due Date</span>
+          <DueDate date={task.dueDate} />
+        </div>
       </div>
 
-      <div className='grid grid-cols-2 gap-4 text-gray-700 mb-4'>
-        <AssigneeInfo assignee={task.assignee} />
-        <DueDate date={task.dueDate} />
+      <div className='mb-6'>
+        <TaskComments comments={comments} />
       </div>
 
-      <TaskComments comments={comments} />
-
-      <div className='flex justify-end mt-5'>
-        <button className='btn btn-neutral' onClick={onClose}>
+      <div className='flex justify-end'>
+        <button className='px-4 py-2 btn btn-neutral' onClick={onClose}>
           Close
         </button>
       </div>

@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import type { Task } from '../../../utils/types.ts';
+import { useEffect } from 'react';
 import { useTaskStore } from '../../../stores/task-store.ts';
 import ViewTask from './view-task.tsx';
 import EditTask from './edit-task.tsx';
@@ -18,10 +17,13 @@ type TaskDetailsProps = {
 };
 
 function TaskDetails({ taskId, onClose }: TaskDetailsProps) {
-  const { currentTask: task, loadingTask, fetchTaskById } = useTaskStore();
+  // todo fix multiple rerender
+  const task = useTaskStore((state) => state.currentTask);
+  const loadingTask = useTaskStore((state) => state.loadingTask);
+  const fetchTaskById = useTaskStore((state) => state.fetchTaskById);
   const isAuthor = false;
-  const [taskCopy, setTaskCopy] = useState<Task | null>(null);
 
+  console.log('task', task);
   const comments: Comment[] = [
     { id: '1', author: { name: 'Alice' }, date: '2025-12-12', text: 'This task needs more details.' },
     { id: '2', author: { name: 'Bob' }, date: '2025-12-13', text: 'I will handle the backend part.' },
@@ -29,26 +31,13 @@ function TaskDetails({ taskId, onClose }: TaskDetailsProps) {
   ];
 
   useEffect(() => {
-    fetchTaskById(taskId);
-  }, [taskId, fetchTaskById]);
-
-  useEffect(() => {
-    if (task) {
-      setTaskCopy(task);
+    // Не грузим задачу, если уже есть и id совпадает
+    if (!task || task.id !== taskId) {
+      fetchTaskById(taskId);
     }
-  }, [task]);
-  console.log('taskId', taskId);
-  console.log('task', task);
-  console.log('taskCopy', taskCopy);
-  const onChange = () => {
-    console.log('onChange');
-  };
+  }, [taskId, fetchTaskById, task]);
 
-  const onSave = () => {
-    console.log('onSave');
-  };
-
-  if (loadingTask || !task || !taskCopy) {
+  if (loadingTask || !task) {
     return <TaskDetailsSkeleton />;
   }
 
@@ -56,7 +45,8 @@ function TaskDetails({ taskId, onClose }: TaskDetailsProps) {
     return <ViewTask task={task} comments={comments} onClose={onClose} />;
   }
 
-  return <EditTask task={task} comments={comments} onChange={onChange} onSave={onSave} />;
+  // onChange/onSave реализуются внутри EditTask через локальный стейт
+  return <EditTask task={task} comments={comments} onClose={onClose} />;
 }
 
 export default TaskDetails;
