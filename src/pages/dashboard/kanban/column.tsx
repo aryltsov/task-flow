@@ -1,8 +1,8 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import type { Task } from '../../utils/types.ts';
+import type { Task } from '../../../utils/types.ts';
 import TaskCard from './task-card.tsx';
-import SortableTaskItem from './sortable-task-item.tsx';
+import SortableItemWrapper from './sortable-item-wrapper.tsx';
 
 type BoardSectionProps = {
   id: string;
@@ -26,9 +26,9 @@ const Column = ({ id, title, tasks }: BoardSectionProps) => {
         <div className='w-full' ref={setNodeRef}>
           {tasks.map((task) => (
             <div key={task.id} className='mb-2'>
-              <SortableTaskItem id={task.id}>
+              <SortableItemWrapper id={task.id}>
                 <TaskCard {...task} />
-              </SortableTaskItem>
+              </SortableItemWrapper>
             </div>
           ))}
         </div>

@@ -10,31 +10,34 @@ import {
   type DragStartEvent,
   type DragOverEvent,
   type DragEndEvent,
-  type DropAnimation,
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import Column from './column.tsx';
-import { INITIAL_TASKS } from '../../data/tasks.ts';
-import { findBoardSectionContainer, initializeBoard } from '../../utils/board.ts';
-import { useState } from 'react';
-import { getTaskById } from '../../utils/tasks.ts';
 import TaskCard from './task-card.tsx';
+import { useState, useEffect } from 'react';
+import { findBoardSectionContainer, initializeBoard } from '../../../utils/board.ts';
+import type { BoardSections, Task } from '../../../utils/types.ts';
 import { produce } from 'immer';
-import type { BoardSections, Task } from '../../utils/types.ts';
+import { useTaskStore } from '../../../stores/task-store.ts';
+import KanbanBoardSkeleton from './kanban-board-skeleton.tsx';
 
 const KanbanBoard = () => {
-  const tasks = INITIAL_TASKS;
-  const initialBoardSections = initializeBoard(INITIAL_TASKS);
-  const [boardSections, setBoardSections] = useState<BoardSections>(initialBoardSections);
-
+  const { tasks, loadingTasks, getTasks } = useTaskStore();
+  const [boardSections, setBoardSections] = useState<BoardSections>({});
   const [activeTaskId, setActiveTaskId] = useState<null | string>(null);
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
+  // Получаем таски при монтировании
+  useEffect(() => {
+    getTasks();
+  }, [getTasks]);
+
+  // Инициализация boardSections после получения тасок
+  useEffect(() => {
+    if (tasks.length) {
+      setBoardSections(initializeBoard(tasks));
+    }
+  }, [tasks]);
 
   const handleDragStart = ({ active }: DragStartEvent) => {
     setActiveTaskId(active.id as string);
@@ -44,7 +47,6 @@ const KanbanBoard = () => {
     return produce(board, (draft: BoardSections) => {
       const activeContainer = findBoardSectionContainer(draft, activeId);
       const overContainer = findBoardSectionContainer(draft, overId);
-
       if (!activeContainer || !overContainer) return;
 
       const activeIndex = draft[activeContainer].findIndex((t: Task) => t.id === activeId);
@@ -68,21 +70,22 @@ const KanbanBoard = () => {
     setActiveTaskId(null);
   };
 
-  const dropAnimation: DropAnimation = {
-    ...defaultDropAnimation,
-  };
-
-  const task = activeTaskId ? getTaskById(tasks, activeTaskId) : null;
+  const activeTask = activeTaskId ? tasks.find((t) => t.id === activeTaskId) : null;
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
-      <div className='flex items-top justify-center gap-3 w-fit h-full overflow-scroll'>
-        {Object.keys(boardSections).map((boardSectionKey) => (
-          <Column key={boardSectionKey} id={boardSectionKey} title={boardSectionKey} tasks={boardSections[boardSectionKey]} />
-        ))}
-        <DragOverlay dropAnimation={dropAnimation}>{task ? <TaskCard {...task} /> : null}</DragOverlay>
+    <>
+      {loadingTasks && <KanbanBoardSkeleton />}
+      <div className='relative'>
+        <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
+          <div className='flex items-top justify-center gap-3 w-fit h-full overflow-scroll'>
+            {Object.keys(boardSections).map((boardSectionKey) => (
+              <Column key={boardSectionKey} id={boardSectionKey} title={boardSectionKey} tasks={boardSections[boardSectionKey]} />
+            ))}
+            <DragOverlay dropAnimation={defaultDropAnimation}>{activeTask ? <TaskCard {...activeTask} /> : null}</DragOverlay>
+          </div>
+        </DndContext>
       </div>
-    </DndContext>
+    </>
   );
 };
 

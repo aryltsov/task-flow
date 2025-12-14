@@ -12,6 +12,7 @@ export type BoardSections = {
 
 export type Task = {
   id: string;
+  creator: string;
   title: string;
   description?: string;
   priority?: Priority;
