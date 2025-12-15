@@ -71,20 +71,20 @@ const KanbanBoard = () => {
 
   const activeTask = activeTaskId ? tasks.find((t) => t.id === activeTaskId) : null;
 
+  if (loadingTasks) {
+    return <KanbanBoardSkeleton />;
+  }
   return (
-    <>
-      {loadingTasks && <KanbanBoardSkeleton />}
-      <div className='relative'>
-        <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
-          <div className='flex items-top justify-center gap-3 w-fit h-full overflow-scroll'>
-            {Object.keys(boardSections).map((boardSectionKey) => (
-              <Column key={boardSectionKey} id={boardSectionKey} title={boardSectionKey} tasks={boardSections[boardSectionKey]} />
-            ))}
-            <DragOverlay dropAnimation={defaultDropAnimation}>{activeTask ? <TaskCard {...activeTask} /> : null}</DragOverlay>
-          </div>
-        </DndContext>
-      </div>
-    </>
+    <div className='relative'>
+      <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
+        <div className='flex items-top justify-center gap-3 w-fit h-full overflow-scroll'>
+          {Object.keys(boardSections).map((boardSectionKey) => (
+            <Column key={boardSectionKey} id={boardSectionKey} title={boardSectionKey} tasks={boardSections[boardSectionKey]} />
+          ))}
+          <DragOverlay dropAnimation={defaultDropAnimation}>{activeTask ? <TaskCard {...activeTask} /> : null}</DragOverlay>
+        </div>
+      </DndContext>
+    </div>
   );
 };
 
