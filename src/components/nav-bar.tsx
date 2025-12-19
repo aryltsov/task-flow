@@ -1,41 +1,22 @@
-import { Link, useNavigate } from 'react-router-dom';
-import ThemeSwitcher from './theme-switcher';
-import { type JSX } from 'react';
-import { type AuthContextType } from '../contexts/auth.context';
-import { useAuth } from '../hooks/use-auth.hook.ts';
-import Avatar from './avatar.tsx';
+import { Link } from 'react-router-dom';
+import ThemeSwitcher from '@components/theme-switcher.tsx';
+import { useBoardStore } from '@stores/board.store.ts';
 
 type NavBarProps = {
   onSidebarToggle?: () => void;
   sidebarOpen?: boolean;
 };
 
-export default function NavBar({ onSidebarToggle, sidebarOpen }: NavBarProps): JSX.Element {
-  const auth: AuthContextType = useAuth();
-  const navigate = useNavigate();
-
-  // TODO move logout logic to auth context
-  const handleLogout = async () => {
-    try {
-      if (auth?.logout) {
-        auth.logout();
-      } else {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-      }
-    } finally {
-      navigate('/login', { replace: true });
-    }
-  };
+export default function NavBar({ onSidebarToggle, sidebarOpen }: NavBarProps) {
+  const { activeProject } = useBoardStore();
 
   return (
     <nav className='navbar bg-base-100 shadow-sm px-4'>
       <div className='flex justify-between w-full'>
         <div className='flex items-center gap-2'>
-          {/* Sidebar toggle button (visible on mobile only) */}
           <div>
             <Link to='/' className='btn btn-ghost normal-case text-xl'>
-              Task Flow
+              {activeProject?.title}
             </Link>
           </div>
 
@@ -53,16 +34,6 @@ export default function NavBar({ onSidebarToggle, sidebarOpen }: NavBarProps): J
         </div>
 
         <div className='flex items-center justify-end gap-3'>
-          {auth.user && (
-            <>
-              <Avatar name={auth.user.name || auth.user.email} avatarUrl={auth.user.avatarUrl} rtl />
-
-              <button onClick={handleLogout} className='btn btn-sm btn-outline btn-error'>
-                Logout
-              </button>
-            </>
-          )}
-
           <ThemeSwitcher />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { getInitials } from '../utils/utils.ts';
+import { getInitials } from '@utils/utils.ts';
 
 type UserBadgeProps = {
   name: string;

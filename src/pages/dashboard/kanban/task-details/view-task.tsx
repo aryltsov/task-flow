@@ -1,17 +1,16 @@
-import type { Task } from '../../../utils/types.ts';
-import PriorityBadge from '../../../components/priority-badge.tsx';
-import StatusBadge from '../../../components/status-badge.tsx';
-import AssigneeInfo from '../../../components/assignee-info.tsx';
-import DueDate from '../../../components/date.tsx';
+import PriorityBadge from '@components/priority-badge';
+import StatusBadge from '@components/status-badge.tsx';
+import AssigneeInfo from '@components/assignee-info.tsx';
+import DueDate from '@components/date.tsx';
 import TaskComments from './task-comments.tsx';
+import type { Task } from '@models/task.interface.ts';
 
 type TaskViewProps = {
   task: Task;
-  comments: any[];
   onClose: () => void;
 };
 
-export default function ViewTask({ task, comments, onClose }: TaskViewProps) {
+export default function ViewTask({ task, onClose }: TaskViewProps) {
   return (
     <div className='w-full max-w-lg mx-auto'>
       <h2 className='text-2xl font-bold text-gray-800 mb-2'>{task.title}</h2>
@@ -42,7 +41,7 @@ export default function ViewTask({ task, comments, onClose }: TaskViewProps) {
       </div>
 
       <div className='mb-6'>
-        <TaskComments comments={comments} />
+        <TaskComments comments={task.comments} />
       </div>
 
       <div className='flex justify-end'>

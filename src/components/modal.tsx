@@ -14,6 +14,7 @@ export const useModal = () => {
 };
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
+  // todo fix old dat blinking on modal open
   const [isOpen, setIsOpen] = useState(false);
   const [header, setHeader] = useState<ReactNode>(null);
   const [body, setBody] = useState<ReactNode>(null);
@@ -29,8 +30,8 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const closeModal = () => {
-    setIsOpen(false);
     onCloseCallback?.();
+    setIsOpen(false);
   };
 
   return (
@@ -42,11 +43,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
           className='modal fixed inset-0 z-50 modal-open'
           onClick={(e) => {
             if (e.target === e.currentTarget) {
-              // вызываем callback, который изменит URL
-              onCloseCallback?.();
-
-              // закрываем визуально модалку
-              setIsOpen(false);
+              closeModal();
             }
           }}>
           <div className='modal-box'>

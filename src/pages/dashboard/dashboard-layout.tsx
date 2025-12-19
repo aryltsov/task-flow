@@ -1,13 +1,13 @@
 import type { JSX } from 'react';
 import { useState, useEffect } from 'react';
-import NavBar from '../components/nav-bar.tsx';
-import Sidebar from '../components/sidebar.tsx';
+import Sidebar from '@components/sidebar.tsx';
+import NavBar from '@components/nav-bar';
 
 type DashboardLayoutProps = {
   children: JSX.Element | JSX.Element[];
 };
 
-export default function DashboardLayout({ children }: DashboardLayoutProps): JSX.Element {
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): JSX
     <Sidebar open={sidebarOpen} onClose={handleSidebarToggle}>
       <NavBar onSidebarToggle={handleSidebarToggle} sidebarOpen={sidebarOpen} />
       <main role='main' className='w-full overflow-x-scroll p-3'>
-        {children} {/* Тут будут подставляться разные страницы */}
+        {children}
       </main>
     </Sidebar>
   );

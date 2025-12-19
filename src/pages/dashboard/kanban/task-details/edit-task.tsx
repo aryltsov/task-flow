@@ -1,22 +1,14 @@
-import type { Assignee, Priority, Status, Task } from '../../../utils/types.ts';
-import TaskComments from './task-comments.tsx';
-
-type Comment = {
-  id: string;
-  author: { name: string };
-  date: string;
-  text: string;
-};
+import type { Task } from '@models/task.interface';
+import type { Assignee } from '@models/creator';
+import { useState, useEffect } from 'react';
+import TaskComments from '@pages/dashboard/kanban/task-details/task-comments.tsx';
 
 type TaskEditProps = {
   task: Task;
-  comments: Comment[];
   onClose: () => void;
 };
 
-import { useState, useEffect } from 'react';
-
-export default function EditTask({ task, comments, onClose }: TaskEditProps) {
+export default function EditTask({ task, onClose }: TaskEditProps) {
   const [taskCopy, setTaskCopy] = useState<Task>({ ...task });
 
   useEffect(() => {
@@ -31,8 +23,7 @@ export default function EditTask({ task, comments, onClose }: TaskEditProps) {
   };
 
   const onSave = () => {
-    // Здесь можно добавить логику сохранения (например, вызов API)
-    // Сейчас просто закрываем окно
+    // todo add api to save data
     onClose();
   };
 
@@ -53,7 +44,7 @@ export default function EditTask({ task, comments, onClose }: TaskEditProps) {
         <div className='flex gap-4'>
           <div className='flex-1'>
             <label className='label font-medium'>Приоритет</label>
-            <select value={taskCopy.priority} onChange={(e) => onChange('priority', e.target.value as Priority)} className='select select-bordered w-full'>
+            <select value={taskCopy.priority} onChange={(e) => onChange('priority', e.target.value)} className='select select-bordered w-full'>
               <option value='low'>Низкий</option>
               <option value='medium'>Средний</option>
               <option value='high'>Высокий</option>
@@ -62,7 +53,7 @@ export default function EditTask({ task, comments, onClose }: TaskEditProps) {
 
           <div className='flex-1'>
             <label className='label font-medium'>Статус</label>
-            <select value={taskCopy.status} onChange={(e) => onChange('status', e.target.value as Status)} className='select select-bordered w-full'>
+            <select value={taskCopy.status} onChange={(e) => onChange('status', e.target.value)} className='select select-bordered w-full'>
               <option value='backlog'>Backlog</option>
               <option value='todo'>Todo</option>
               <option value='progress'>Progress</option>
@@ -83,10 +74,10 @@ export default function EditTask({ task, comments, onClose }: TaskEditProps) {
             />
           </div>
 
-          <div className='flex-1'>
-            <label className='label font-medium'>Дата выполнения</label>
-            <input type='date' value={taskCopy.dueDate || ''} onChange={(e) => onChange('dueDate', e.target.value)} className='input input-bordered w-full' />
-          </div>
+          {/*<div className='flex-1'>*/}
+          {/*  <label className='label font-medium'>Дата выполнения</label>*/}
+          {/*  <input type='date' value={taskCopy.dueDate || ''} onChange={(e) => onChange('dueDate', e.target.value)} className='input input-bordered w-full' />*/}
+          {/*</div>*/}
         </div>
 
         <div className='flex justify-end mt-4'>
@@ -95,7 +86,7 @@ export default function EditTask({ task, comments, onClose }: TaskEditProps) {
           </button>
         </div>
 
-        <TaskComments comments={comments} />
+        <TaskComments comments={taskCopy.comments} />
       </div>
     </div>
   );

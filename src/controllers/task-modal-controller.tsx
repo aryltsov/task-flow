@@ -1,15 +1,12 @@
 import { useEffect } from 'react';
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
-import { useModal } from '../components/modal.tsx';
-import TaskDetails from '../pages/dashboard/task-details/task-details.tsx';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useModal } from '@components/modal.tsx';
+import TaskDetails from '@pages/dashboard/kanban/task-details/task-details.tsx';
 
-export function TaskModalController() {
-  const [params] = useSearchParams();
+export default function TaskModalController() {
+  const { projectId, taskId } = useParams<{ projectId: string; taskId?: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
   const { openModal, closeModal } = useModal();
-
-  const taskId = params.get('task');
 
   useEffect(() => {
     if (!taskId) {
@@ -23,9 +20,8 @@ export function TaskModalController() {
     });
 
     function onCloseHandler() {
-      const newParams = new URLSearchParams(location.search);
-      newParams.delete('task');
-      navigate({ pathname: location.pathname, search: newParams.toString() });
+      navigate(`/dashboard/projects/${projectId}`);
+      closeModal();
     }
   }, [taskId]);
 

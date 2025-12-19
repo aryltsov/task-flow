@@ -1,15 +1,13 @@
-import type { Status } from '../utils/types.ts';
-
-const STATUS_MAP: Record<Status, { label: string; cls: string }> = {
+const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   backlog: { label: 'Backlog', cls: 'badge-ghost' },
   todo: { label: 'To do', cls: 'badge-neutral' },
   progress: { label: 'In progress', cls: 'badge-primary' },
   done: { label: 'Done', cls: 'badge-success' },
   blocked: { label: 'Blocked', cls: 'badge-error' },
 };
-
+// todo replace hardcode with dynamic values
 type StatusBadgeProps = {
-  status?: Status;
+  status?: string;
 };
 
 export default function StatusBadge({ status }: StatusBadgeProps) {

@@ -1,90 +1,65 @@
-import {
-  useSensors,
-  useSensor,
-  PointerSensor,
-  KeyboardSensor,
-  DndContext,
-  closestCorners,
-  DragOverlay,
-  defaultDropAnimation,
-  type DragStartEvent,
-  type DragOverEvent,
-  type DragEndEvent,
-} from '@dnd-kit/core';
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import Column from './column.tsx';
-import TaskCard from './task-card.tsx';
-import { useState, useEffect } from 'react';
-import { findBoardSectionContainer, initializeBoard } from '../../../utils/board.ts';
-import type { BoardSections, Task } from '../../../utils/types.ts';
+import { DragDropContext, type DropResult } from '@hello-pangea/dnd';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { produce } from 'immer';
-import { useTaskStore } from '../../../stores/task-store.ts';
-import KanbanBoardSkeleton from './kanban-board-skeleton.tsx';
+import Column from './column';
+import KanbanBoardSkeleton from './kanban-board-skeleton';
+import { useBoardStore } from '@stores/board.store';
+import { useBoardSections } from '@hooks/use-board-sections';
+
+import type { BoardSections } from '@models/board-sections';
 
 const KanbanBoard = () => {
-  const { tasks, loadingTasks, getTasks } = useTaskStore();
+  const { projectId } = useParams<{ projectId: string }>();
+  const { setActiveProjectId, fetchActiveProject, fetchTasksByProject, dropActiveProject, tasks, loadingTasks } = useBoardStore();
+
+  useEffect(() => {
+    if (!projectId) return;
+
+    setActiveProjectId(projectId);
+    fetchActiveProject(projectId);
+    fetchTasksByProject(projectId);
+
+    return () => dropActiveProject();
+  }, [projectId]);
+
+  const baseBoardSections = useBoardSections(tasks);
   const [boardSections, setBoardSections] = useState<BoardSections>({});
-  const [activeTaskId, setActiveTaskId] = useState<null | string>(null);
-  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
-
-  // todo fix multiple rerender
-  useEffect(() => {
-    getTasks();
-  }, [getTasks]);
 
   useEffect(() => {
-    if (tasks.length) {
-      setBoardSections(initializeBoard(tasks));
+    setBoardSections(baseBoardSections);
+  }, [baseBoardSections]);
+
+  const onDragEnd = ({ source, destination }: DropResult) => {
+    if (!destination) return;
+    if (source.droppableId === destination.droppableId && source.index === destination.index) {
+      return;
     }
-  }, [tasks]);
 
-  const handleDragStart = ({ active }: DragStartEvent) => {
-    setActiveTaskId(active.id as string);
+    setBoardSections((board) =>
+      produce(board, (draft) => {
+        const sourceList = draft[source.droppableId];
+        const destList = draft[destination.droppableId];
+
+        const [moved] = sourceList.splice(source.index, 1);
+        destList.splice(destination.index, 0, moved);
+      })
+    );
   };
-
-  const moveTask = (board: BoardSections, activeId: string, overId: string) => {
-    return produce(board, (draft: BoardSections) => {
-      const activeContainer = findBoardSectionContainer(draft, activeId);
-      const overContainer = findBoardSectionContainer(draft, overId);
-      if (!activeContainer || !overContainer) return;
-
-      const activeIndex = draft[activeContainer].findIndex((t: Task) => t.id === activeId);
-      const overIndex = draft[overContainer].findIndex((t: Task) => t.id === overId);
-
-      if (activeIndex === -1 || overIndex === -1) return;
-
-      const [movedItem] = draft[activeContainer].splice(activeIndex, 1);
-      draft[overContainer].splice(overIndex, 0, movedItem);
-    });
-  };
-
-  const handleDragOver = ({ active, over }: DragOverEvent) => {
-    if (!over) return;
-    setBoardSections((board) => moveTask(board, active.id as string, over.id as string));
-  };
-
-  const handleDragEnd = ({ active, over }: DragEndEvent) => {
-    if (!over) return;
-    setBoardSections((board) => moveTask(board, active.id as string, over.id as string));
-    setActiveTaskId(null);
-  };
-
-  const activeTask = activeTaskId ? tasks.find((t) => t.id === activeTaskId) : null;
 
   if (loadingTasks) {
     return <KanbanBoardSkeleton />;
   }
+
+  // todo fix 'Droppable: unsupported nested scroll...'
   return (
-    <div className='relative'>
-      <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
-        <div className='flex items-top justify-center gap-3 w-fit h-full overflow-scroll'>
-          {Object.keys(boardSections).map((boardSectionKey) => (
-            <Column key={boardSectionKey} id={boardSectionKey} title={boardSectionKey} tasks={boardSections[boardSectionKey]} />
-          ))}
-          <DragOverlay dropAnimation={defaultDropAnimation}>{activeTask ? <TaskCard {...activeTask} /> : null}</DragOverlay>
-        </div>
-      </DndContext>
-    </div>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className='flex gap-3 w-fit h-full'>
+        {Object.entries(boardSections).map(([columnId, tasks]) => (
+          <Column key={columnId} id={columnId} title={columnId} tasks={tasks} />
+        ))}
+      </div>
+    </DragDropContext>
   );
 };
 

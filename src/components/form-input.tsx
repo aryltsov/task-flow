@@ -1,18 +1,6 @@
-import React, { useState, type JSX } from 'react';
+import { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-
-type FormInputProps = {
-  id: string;
-  name: string;
-  label: string;
-  type?: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  error?: string;
-  disabled?: boolean;
-  className?: string;
-};
+import type { FormInputProps } from '@models/form-input-props.interface.ts';
 
 export default function FormInput({
   id,
@@ -25,17 +13,21 @@ export default function FormInput({
   error,
   disabled = false,
   className = '',
-}: FormInputProps): JSX.Element {
+  required = false,
+  autoComplete,
+}: FormInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const isPassword = type === 'password';
   const errorId = error ? `${id}-error` : undefined;
 
-  const icon = (() => {
+  const getIcon = (name: string) => {
     if (name === 'email') return <Mail className='w-5 h-5 text-base-content/60' />;
     if (name === 'password') return <Lock className='w-5 h-5 text-base-content/60' />;
     return null;
-  })();
+  };
+
+  const icon = getIcon(name);
 
   return (
     <div className={`form-control w-full ${className}`}>
@@ -44,7 +36,7 @@ export default function FormInput({
       </label>
 
       <div className='relative'>
-        {icon && <span className='absolute z-2 left-3 top-1/2 -translate-y-1/2 text-base-content/60'>{icon}</span>}
+        {icon && <span className='absolute z-2 left-3 top-1/2 -translate-y-1/2'>{icon}</span>}
 
         <input
           id={id}
@@ -54,10 +46,12 @@ export default function FormInput({
           onChange={onChange}
           onBlur={onBlur}
           disabled={disabled}
+          required={required}
+          autoComplete={autoComplete}
           aria-invalid={!!error}
           aria-describedby={errorId}
           className={`input input-bordered w-full pl-10 pr-12
-            transition-all duration-200
+            transition-colors transition-shadow duration-200
             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40
             ${error ? 'input-error' : ''}
             ${disabled ? 'input-disabled opacity-60 cursor-not-allowed' : ''}
@@ -69,7 +63,8 @@ export default function FormInput({
             type='button'
             onClick={() => setShowPassword((s) => !s)}
             className='absolute right-3 top-1/2 -translate-y-1/2 text-base-content/70 hover:text-base-content'
-            tabIndex={-1}>
+            tabIndex={-1}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}>
             {showPassword ? <EyeOff className='w-5 h-5' /> : <Eye className='w-5 h-5' />}
           </button>
         )}

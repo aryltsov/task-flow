@@ -1,9 +1,9 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from '../App';
-import AuthGuard from '../guards/auth-guard';
-import NonAuthGuard from '../guards/non-auth-guard';
-import NotFound from '../pages/not-found';
-import ErrorFallback from '../components/error-fallback';
+import AuthGuard from '@guards/auth-guard';
+import NonAuthGuard from '@guards/non-auth-guard';
+import NotFound from '@pages/not-found';
+import ErrorFallback from '@components/error-fallback';
 
 const router = createBrowserRouter([
   {

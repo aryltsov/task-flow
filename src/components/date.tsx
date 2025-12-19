@@ -1,5 +1,5 @@
 type DueDateProps = {
-  date?: string;
+  date?: Date;
 };
 
 export default function DueDate({ date }: DueDateProps) {

@@ -1,12 +1,11 @@
-import type { JSX } from 'react';
 import KanbanBoard from './kanban-board.tsx';
-import { ModalProvider } from '../../../components/modal.tsx';
-import { TaskModalController } from '../../../controllers/task-modal-controller.tsx';
+import { ModalProvider } from '@components/modal.tsx';
+import { Outlet } from 'react-router-dom';
 
-export default function Dashboard(): JSX.Element {
+export default function Dashboard() {
   return (
     <ModalProvider>
-      <TaskModalController />
+      <Outlet />
       <main role='main' className='w-full overflow-x-scroll p-3'>
         <KanbanBoard />
       </main>

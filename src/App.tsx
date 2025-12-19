@@ -1,12 +1,22 @@
 import './App.css';
 import { Outlet } from 'react-router-dom';
-import type { JSX } from 'react';
+import { useEffect } from 'react';
+import { useMetaStore } from '@stores/meta.store';
+import { AuthProvider } from '@contexts/auth.context';
 
-function App(): JSX.Element {
+function App() {
+  const { fetchMeta } = useMetaStore();
+
+  useEffect(() => {
+    fetchMeta();
+  }, []);
+
   return (
-    <div className='min-h-screen min-w-screen'>
-      <Outlet />
-    </div>
+    <AuthProvider>
+      <div className='min-h-screen min-w-screen'>
+        <Outlet />
+      </div>
+    </AuthProvider>
   );
 }
 

@@ -1,5 +1,4 @@
-import type { JSX } from 'react';
-import UserBadge from './user-badge.tsx';
+import UserBadge from '@components/user-badge.tsx';
 
 type AvatarProps = {
   name: string;
@@ -7,7 +6,7 @@ type AvatarProps = {
   rtl?: boolean;
 };
 
-export default function Avatar({ name, avatarUrl, rtl = false }: AvatarProps): JSX.Element {
+export default function Avatar({ name, avatarUrl, rtl = false }: AvatarProps) {
   return (
     <div className='flex items-center gap-2'>
       {rtl && <span className='text-sm'>{name}</span>}

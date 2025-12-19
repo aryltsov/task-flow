@@ -1,19 +1,15 @@
-import type { JSX } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import DueDate from '../../../components/date.tsx';
-import PriorityBadge from '../../../components/priority-badge.tsx';
-import AssigneeInfo from '../../../components/assignee-info.tsx';
-import type { Task } from '../../../utils/types.ts';
+import { useNavigate, useParams } from 'react-router-dom';
+import DueDate from '@components/date.tsx';
+import PriorityBadge from '@components/priority-badge.tsx';
+import AssigneeInfo from '@components/assignee-info.tsx';
+import type { Task } from '@models/task.interface';
 
-export default function TaskCard(task: Task): JSX.Element {
+export default function TaskCard(task: Task) {
+  const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // todo use react router dom
-  const handleClick = () => {
-    const params = new URLSearchParams(location.search);
-    params.set('task', task.id);
-    navigate({ pathname: location.pathname, search: params.toString() });
+  // todo do not use hardcoded routes
+  const handleClick = (taskId: string) => {
+    navigate(`/dashboard/projects/${projectId}/tasks/${taskId}`);
   };
 
   return (
@@ -30,7 +26,7 @@ export default function TaskCard(task: Task): JSX.Element {
               className='text-base font-semibold w-[235px] line-clamp-3 break-words cursor-pointer'
               onClick={(e) => {
                 e.preventDefault();
-                handleClick();
+                handleClick(task.id);
               }}>
               {task.title}
             </h3>

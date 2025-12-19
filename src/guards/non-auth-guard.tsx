@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/use-auth.hook';
-import AuthRoutes from '../routes/auth.tsx';
+import AuthRoutes from '@routes/auth.tsx';
+import { useAuth } from '@hooks/use-auth.ts';
 
 export default function NonAuthGuard() {
   const { isAuthenticated } = useAuth();

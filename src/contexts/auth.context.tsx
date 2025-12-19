@@ -1,60 +1,64 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
-
-export type Credentials = { email: string; password: string };
-
-export class User {
-  email: string;
-  name: string;
-  avatarUrl: string;
-  id: string;
-
-  constructor(email: string) {
-    this.email = email;
-    this.name = 'Ryltsov Anton';
-    this.avatarUrl = '';
-    this.id = 'a1b2c3d4-1111-4444-8888-000000000111';
-  }
-}
-
-export interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  login: (credentials: Credentials) => Promise<void>;
-  logout: () => void;
-}
-
-const LS_KEY = 'app_user';
-
-function getCurrentUserSync(): User | null {
-  const raw = localStorage.getItem(LS_KEY);
-  return raw ? JSON.parse(raw) : null;
-}
-
-function saveUser(user: User | null) {
-  if (user === null) localStorage.removeItem(LS_KEY);
-  else localStorage.setItem(LS_KEY, JSON.stringify(user));
-}
+import { useNavigate } from 'react-router-dom';
+import type { AuthContextType } from '@models/auth-context-type.interface.ts';
+import type { User } from '@models/user.interface.ts';
+import type { Credentials } from '@models/credentials.ts';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const initialUser = getCurrentUserSync();
-  const [user, setUser] = useState<User | null>(initialUser);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const checkAuth = async () => {
+    try {
+      const res = await fetch('/api/me', { credentials: 'include' });
+      if (!res.ok) throw new Error('Not authenticated');
+      const data = await res.json();
+      setUser(data);
+    } catch {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    saveUser(user);
-  }, [user]);
+    checkAuth();
+  }, []);
 
   const login = async (credentials: Credentials) => {
-    const newUser = new User(credentials.email);
-    setUser(newUser);
-    saveUser(newUser);
+    const { signInWithEmailAndPassword } = await import('firebase/auth');
+    const { auth } = await import('../firebase');
+    const userCredential = await signInWithEmailAndPassword(auth, credentials.email, credentials.password);
+    const idToken = await userCredential.user.getIdToken();
+
+    // send a token to the backend to set the httpOnly cookie.
+    const res = await fetch('/sessionLogin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ idToken }),
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || 'Login failed');
+    }
+
+    await checkAuth();
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await fetch('/sessionLogout', {
+      method: 'POST',
+      credentials: 'include',
+    });
     setUser(null);
-    saveUser(null);
+    navigate('/login', { replace: true });
   };
+
+  if (loading) return null;
 
   return (
     <AuthContext.Provider
@@ -63,6 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isAuthenticated: !!user,
         login,
         logout,
+        checkAuth,
       }}>
       {children}
     </AuthContext.Provider>
