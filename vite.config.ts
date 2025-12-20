@@ -35,6 +35,8 @@ export default defineConfig({
       '@contexts': path.resolve(__dirname, 'src/contexts'),
       '@guards': path.resolve(__dirname, 'src/guards'),
       '@services': path.resolve(__dirname, 'src/services'),
+      '@providers': path.resolve(__dirname, 'src/providers'),
+      '@controllers': path.resolve(__dirname, 'src/controllers'),
       '@utils': path.resolve(__dirname, 'src/utils'),
     },
   },

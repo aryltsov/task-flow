@@ -31,6 +31,7 @@ const KanbanBoard = () => {
   }, [baseBoardSections]);
 
   const onDragEnd = ({ source, destination }: DropResult) => {
+    // todo add api to update ticket status
     if (!destination) return;
     if (source.droppableId === destination.droppableId && source.index === destination.index) {
       return;
@@ -52,6 +53,7 @@ const KanbanBoard = () => {
   }
 
   // todo fix 'Droppable: unsupported nested scroll...'
+  // todo fix drop into empty column
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className='flex gap-3 w-fit h-full'>

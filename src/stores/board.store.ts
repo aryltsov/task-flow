@@ -37,8 +37,13 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   loadingProjects: false,
 
   setProjects: (projects) => set({ projects }),
-  setActiveProjectId: (id) => set({ activeProjectId: id }),
-  dropActiveProject: () => set({ activeProjectId: null, activeProject: null }),
+  setActiveProjectId: (id) => {
+    set({ activeProjectId: id });
+  },
+
+  dropActiveProject: () => {
+    set({ activeProjectId: null, activeProject: null });
+  },
 
   fetchProjects: async () => {
     set({ loadingProjects: true });

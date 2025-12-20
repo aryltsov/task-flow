@@ -12,7 +12,6 @@ type TaskDetailsProps = {
 function TaskDetails({ taskId, onClose }: TaskDetailsProps) {
   const { currentTask: task, loadingTask, fetchTaskById } = useBoardStore();
   const isAuthor = false;
-
   useEffect(() => {
     if (!task || task.id !== taskId) {
       fetchTaskById(taskId);

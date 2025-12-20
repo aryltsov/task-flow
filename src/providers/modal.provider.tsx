@@ -7,6 +7,7 @@ type ModalContextType = {
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
+//todo move to the hooks folder
 export const useModal = () => {
   const ctx = useContext(ModalContext);
   if (!ctx) throw new Error('useModal must be used inside ModalProvider');
@@ -42,11 +43,12 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
         <dialog
           className='modal fixed inset-0 z-50 modal-open'
           onClick={(e) => {
+            e.stopPropagation();
             if (e.target === e.currentTarget) {
               closeModal();
             }
           }}>
-          <div className='modal-box'>
+          <div className='modal-box' onClick={(e) => e.stopPropagation()}>
             {header && <div className='modal-header'>{header}</div>}
             <div className='modal-body py-4'>{body}</div>
             {footer && <div className='modal-action'>{footer}</div>}

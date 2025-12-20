@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 4000;
 
-const serviceAccountRaw = fs.readFileSync(path.join(__dirname, 'task-flow-bb0fa-firebase-adminsdk-fbsvc-740ed182ff.json'), 'utf-8');
+const serviceAccountRaw = fs.readFileSync(path.join(__dirname, 'task-flow-bb0fa-firebase-adminsdk-fbsvc-dbcaa7f6c0.json'), 'utf-8');
 
 const serviceAccount = JSON.parse(serviceAccountRaw);
 
@@ -27,7 +27,8 @@ app.post('/sessionLogin', async (req, res) => {
   if (!idToken) return res.status(400).json({ error: 'Missing idToken' });
 
   try {
-    const expiresIn = 5 * 24 * 60 * 60 * 1000; // 5 дней
+    const expiresIn = 13 * 24 * 60 * 60 * 1000; // 50 дней
+    console.log('idToken (first 30 chars):', idToken.slice(0, 30));
     const sessionCookie = await admin.auth().createSessionCookie(idToken, { expiresIn });
 
     res.cookie('session', sessionCookie, {

@@ -37,6 +37,8 @@
       "@contexts/*": ["contexts/*"],
       "@guards/*": ["guards/*"],
       "@services/*": ["services/*"],
+      "@providers/*": ["providers/*"],
+      "@controllers/*": ["controllers/*"],
       "@utils/*": ["utils/*"]
     }
   },

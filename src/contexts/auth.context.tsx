@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import type { AuthContextType } from '@models/auth-context-type.interface.ts';
 import type { User } from '@models/user.interface.ts';
 import type { Credentials } from '@models/credentials.ts';
+import { ROUTES } from '@routes/paths.ts';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -55,7 +56,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       credentials: 'include',
     });
     setUser(null);
-    navigate('/login', { replace: true });
+    navigate(ROUTES.auth.login, { replace: true });
   };
 
   if (loading) return null;

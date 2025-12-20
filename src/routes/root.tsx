@@ -4,6 +4,7 @@ import AuthGuard from '@guards/auth-guard';
 import NonAuthGuard from '@guards/non-auth-guard';
 import NotFound from '@pages/not-found';
 import ErrorFallback from '@components/error-fallback';
+import { ROUTE_PATTERNS } from '@routes/paths.ts';
 
 const router = createBrowserRouter([
   {
@@ -12,11 +13,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorFallback />,
     children: [
       {
-        path: 'dashboard/*',
+        path: `${ROUTE_PATTERNS.dashboard.root}/*`,
         element: <AuthGuard />,
       },
       {
-        path: 'login/*',
+        path: `${ROUTE_PATTERNS.auth.login}/*`,
         element: <NonAuthGuard />,
       },
       { index: true, element: <Navigate to='dashboard' replace /> },

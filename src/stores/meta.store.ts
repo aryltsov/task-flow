@@ -24,8 +24,7 @@ export const useMetaStore = create<MetaState>((set, get) => ({
     if (get().statuses.length) return;
 
     try {
-      const response = await metaService.getStatuses();
-      const meta = response[0];
+      const meta = await metaService.getStatuses();
 
       const statuses = meta['task-statuses'];
       const priorities = meta['task-priorities'];
