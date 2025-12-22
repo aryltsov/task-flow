@@ -8,12 +8,13 @@ export default function TaskModalController() {
   const { projectId, taskId } = useParams<{ projectId: string; taskId: string }>();
   const isView = useMatch(ROUTE_PATTERNS.dashboard.projects.tasks.view);
   const navigate = useNavigate();
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
 
   useEffect(() => {
     if (!isView || !projectId || !taskId) return;
 
     const onClose = () => {
+      closeModal();
       navigate(ROUTES.dashboard.projects.tasks.root(projectId), { replace: true });
     };
 

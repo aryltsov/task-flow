@@ -5,12 +5,7 @@ import DueDate from '@components/date.tsx';
 import TaskComments from './task-comments.tsx';
 import type { Task } from '@models/task.interface.ts';
 
-type TaskViewProps = {
-  task: Task;
-  onClose: () => void;
-};
-
-export default function ViewTask({ task, onClose }: TaskViewProps) {
+export default function ViewTask(task: Task) {
   return (
     <div className='w-full max-w-lg mx-auto'>
       <h2 className='text-2xl font-bold text-gray-800 mb-2'>{task.title}</h2>
@@ -42,12 +37,6 @@ export default function ViewTask({ task, onClose }: TaskViewProps) {
 
       <div className='mb-6'>
         <TaskComments comments={task.comments} />
-      </div>
-
-      <div className='flex justify-end'>
-        <button className='px-4 py-2 btn btn-neutral' onClick={onClose}>
-          Close
-        </button>
       </div>
     </div>
   );

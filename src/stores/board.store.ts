@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import { getProjectById, getProjects } from '@services/projects.service';
 import { taskService } from '@services/task.service';
 import type { ProjectInterface } from '@models/project.interface.ts';
 import type { Task } from '@models/task.interface';
+import { projectService } from '@services/projects.service.ts';
 
 // todo split into separate stores (task and projects)
 type BoardState = {
@@ -48,7 +48,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   fetchProjects: async () => {
     set({ loadingProjects: true });
     try {
-      const projects = await getProjects();
+      const projects = await projectService.getProjects();
       set({ projects, loadingProjects: false });
     } catch {
       set({ loadingProjects: false });
@@ -58,7 +58,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   fetchActiveProject: async (id) => {
     set({ loadingProject: true });
     try {
-      const project = await getProjectById(id);
+      const project = await projectService.getProjectById(id);
       set({ activeProject: project, loadingProject: false });
     } catch {
       set({ loadingProject: false });

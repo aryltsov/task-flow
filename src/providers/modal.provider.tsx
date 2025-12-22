@@ -48,7 +48,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
               closeModal();
             }
           }}>
-          <div className='modal-box' onClick={(e) => e.stopPropagation()}>
+          <div className='modal-box max-w-none w-fit' onClick={(e) => e.stopPropagation()}>
             {header && <div className='modal-header'>{header}</div>}
             <div className='modal-body py-4'>{body}</div>
             {footer && <div className='modal-action'>{footer}</div>}

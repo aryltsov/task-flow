@@ -1,14 +1,14 @@
 import type { Task } from '@models/task.interface';
 import type { Assignee } from '@models/creator';
 import { useState, useEffect } from 'react';
-import TaskComments from '@pages/dashboard/kanban/task-details/task-comments.tsx';
 
 type TaskEditProps = {
   task: Task;
-  onClose: () => void;
+  onSave: (res: any) => void;
+  onCancel: () => void;
 };
 
-export default function EditTask({ task, onClose }: TaskEditProps) {
+export default function EditTask({ task, onSave, onCancel }: TaskEditProps) {
   const [taskCopy, setTaskCopy] = useState<Task>({ ...task });
 
   useEffect(() => {
@@ -20,11 +20,6 @@ export default function EditTask({ task, onClose }: TaskEditProps) {
       ...prev,
       [key]: value,
     }));
-  };
-
-  const onSave = () => {
-    // todo add api to save data
-    onClose();
   };
 
   return (
@@ -80,13 +75,14 @@ export default function EditTask({ task, onClose }: TaskEditProps) {
           {/*</div>*/}
         </div>
 
-        <div className='flex justify-end mt-4'>
-          <button className='btn btn-primary' onClick={onSave}>
-            Сохранить
+        <div className='pt-4 flex justify-end gap-2 border-t border-base-300'>
+          <button className='btn btn-ghost' onClick={onCancel}>
+            Cancel
+          </button>
+          <button className='btn btn-primary' onClick={() => onSave(true)}>
+            Save changes
           </button>
         </div>
-
-        <TaskComments comments={taskCopy.comments} />
       </div>
     </div>
   );

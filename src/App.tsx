@@ -13,13 +13,13 @@ function App() {
   }, []);
 
   return (
-    <ModalProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <ModalProvider>
         <div className='min-h-screen min-w-screen'>
           <Outlet />
         </div>
-      </AuthProvider>
-    </ModalProvider>
+      </ModalProvider>
+    </AuthProvider>
   );
 }
 
