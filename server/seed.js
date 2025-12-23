@@ -1,7 +1,7 @@
 import admin from 'firebase-admin';
 import { v4 as uuidv4 } from 'uuid';
 import { faker } from '@faker-js/faker';
-import serviceAccount from './task-flow-bb0fa-firebase-adminsdk-fbsvc-740ed182ff.json' assert { type: 'json' };
+import serviceAccount from './task-flow-bb0fa-firebase-adminsdk-fbsvc-8c6b61dc77.json' assert { type: 'json' };
 
 // ------------------------------------
 // Firebase init

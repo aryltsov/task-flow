@@ -9,6 +9,7 @@ export const ROUTES = {
 
     projects: {
       root: `/${DASHBOARD}/${PROJECTS}`,
+      new: `/${DASHBOARD}/${PROJECTS}/add`,
       view: (projectId: string) => `/${DASHBOARD}/${PROJECTS}/${projectId}/view`,
       edit: (projectId: string) => `/${DASHBOARD}/${PROJECTS}/${projectId}/edit`,
       tasks: {
@@ -36,6 +37,7 @@ export const ROUTE_PATTERNS = {
     projects: {
       root: `/${DASHBOARD}/${PROJECTS}`,
       list: `/${DASHBOARD}/${PROJECTS}/`,
+      new: `/${DASHBOARD}/${PROJECTS}/add`,
 
       view: `/${DASHBOARD}/${PROJECTS}/:projectId/view`,
       edit: `/${DASHBOARD}/${PROJECTS}/:projectId/edit`,
@@ -59,6 +61,7 @@ export const ROUTE_PATTERNS = {
   projects: {
     root: PROJECTS,
     view: `${PROJECTS}/:projectId/view`,
+    new: `${PROJECTS}/add`,
     tasks: {
       root: `${PROJECTS}/:projectId`,
       view: `${PROJECTS}/:projectId/${TASKS}/:taskId/view`,

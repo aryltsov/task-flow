@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useMetaStore } from '@stores/meta.store';
 import { AuthProvider } from '@contexts/auth.context';
 import { ModalProvider } from '@providers/modal.provider.tsx';
+import { ToastProvider } from '@contexts/toast-context.tsx';
 
 function App() {
   const { fetchMeta } = useMetaStore();
@@ -15,9 +16,11 @@ function App() {
   return (
     <AuthProvider>
       <ModalProvider>
-        <div className='min-h-screen min-w-screen'>
-          <Outlet />
-        </div>
+        <ToastProvider>
+          <div className='min-h-screen min-w-screen'>
+            <Outlet />
+          </div>
+        </ToastProvider>
       </ModalProvider>
     </AuthProvider>
   );

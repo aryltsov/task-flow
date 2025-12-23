@@ -24,6 +24,7 @@ export default function DashboardRoutes() {
 
       <Routes>
         <Route path={ROUTE_PATTERNS.projects.tasks.view} element={<TaskModalController />} />
+        <Route path={ROUTE_PATTERNS.projects.new} element={<ProjectModalController />} />
         <Route path={ROUTE_PATTERNS.projects.view} element={<ProjectModalController />} />
       </Routes>
     </>

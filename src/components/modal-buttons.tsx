@@ -9,7 +9,9 @@ export default function ModalButtons({ extended, onEdit, onClose }: TaskEditProp
     <div className='flex justify-end mt-8'>
       {extended && (
         <>
-          <button className='px-4 py-2 btn btn-error mr-2'>Delete</button>
+          <button className='px-4 py-2 btn btn-error mr-2' disabled={true}>
+            Delete
+          </button>
           <button className='px-4 py-2 btn btn-info mr-2' onClick={onEdit}>
             Edit
           </button>

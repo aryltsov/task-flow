@@ -50,3 +50,4 @@ src/pages/.DS_Store
 *.swp
 *.swo
 *~
+/server/task-flow-bb0fa-firebase-adminsdk-fbsvc-8c6b61dc77.json

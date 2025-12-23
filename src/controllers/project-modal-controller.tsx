@@ -1,17 +1,18 @@
 import { useEffect } from 'react';
-import { useNavigate, useParams, useMatch } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useModal } from '@providers/modal.provider.tsx';
 import { ROUTE_PATTERNS, ROUTES } from '@routes/paths.ts';
 import ProjectDetails from '@pages/dashboard/projects/project-details.tsx';
 
 export default function ProjectModalController() {
   const { projectId } = useParams<{ projectId: string }>();
-  const isView = useMatch(ROUTE_PATTERNS.dashboard.projects.view);
+  const isNew = location.pathname.includes(ROUTE_PATTERNS.projects.new);
+  const isView = location.pathname.startsWith('/dashboard/projects') && !!projectId;
   const navigate = useNavigate();
   const { openModal, closeModal } = useModal();
 
   useEffect(() => {
-    if (!isView || !projectId) return;
+    if (!isView && !isNew) return;
 
     const onClose = () => {
       closeModal();
@@ -19,10 +20,10 @@ export default function ProjectModalController() {
     };
 
     openModal({
-      body: <ProjectDetails projectId={projectId} onClose={onClose} />,
+      body: <ProjectDetails projectId={projectId} isNew={isNew} onClose={onClose} />,
       onClose,
     });
-  }, [isView, projectId]);
+  }, [isView, isNew, projectId]);
 
   return null;
 }

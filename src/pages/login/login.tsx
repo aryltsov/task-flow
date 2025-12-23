@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import FormInput from '@components/form-input.tsx';
-import NavBar from '@components/nav-bar.tsx';
-import { useLoginForm } from './use-login-form.hook.ts';
-import { useAuth } from '@hooks/use-auth.ts';
+import FormInput from '@components/form-input';
+import NavBar from '@components/nav-bar';
+import { useLoginForm } from './use-login-form';
+import { useAuth } from '@hooks/use-auth';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ export default function LoginPage() {
   return (
     <>
       <NavBar />
+
       <div className='min-h-screen flex items-center justify-center bg-base-200'>
         <div className='card w-full max-w-md shadow-xl bg-base-100'>
           <div className='card-body'>
@@ -46,7 +47,7 @@ export default function LoginPage() {
                 autoComplete='current-password'
               />
 
-              {errors.server && <p className='text-red-500'>{errors.server}</p>}
+              {errors.server && <p className='text-error text-sm'>{errors.server}</p>}
 
               <div className='form-control mt-6'>
                 <button type='submit' className={`btn btn-primary w-full ${loading ? 'loading' : ''}`} disabled={!isFormValid || loading}>

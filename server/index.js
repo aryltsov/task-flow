@@ -4,6 +4,8 @@ import admin from 'firebase-admin';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import http from 'http';
+import { WebSocketServer } from 'ws';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,7 +13,11 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 4000;
 
-const serviceAccountRaw = fs.readFileSync(path.join(__dirname, 'task-flow-bb0fa-firebase-adminsdk-fbsvc-dbcaa7f6c0.json'), 'utf-8');
+/* ========================
+   Firebase Admin
+======================== */
+
+const serviceAccountRaw = fs.readFileSync(path.join(__dirname, 'task-flow-bb0fa-firebase-adminsdk-fbsvc-8c6b61dc77.json'), 'utf-8');
 
 const serviceAccount = JSON.parse(serviceAccountRaw);
 
@@ -19,16 +25,24 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
+/* ========================
+   Express middlewares
+======================== */
+
 app.use(express.json());
 app.use(cookieParser());
+
+/* ========================
+   Auth routes
+======================== */
 
 app.post('/sessionLogin', async (req, res) => {
   const { idToken } = req.body;
   if (!idToken) return res.status(400).json({ error: 'Missing idToken' });
 
   try {
-    const expiresIn = 13 * 24 * 60 * 60 * 1000; // 50 дней
-    console.log('idToken (first 30 chars):', idToken.slice(0, 30));
+    const expiresIn = 13 * 24 * 60 * 60 * 1000;
+
     const sessionCookie = await admin.auth().createSessionCookie(idToken, { expiresIn });
 
     res.cookie('session', sessionCookie, {
@@ -55,6 +69,7 @@ app.get('/api/me', async (req, res) => {
 
   try {
     const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true);
+
     const userRecord = await admin.auth().getUser(decodedClaims.uid);
 
     res.json({
@@ -68,6 +83,50 @@ app.get('/api/me', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+/* ========================
+   HTTP + WebSocket
+======================== */
+
+const server = http.createServer(app);
+
+const wss = new WebSocketServer({ server });
+
+wss.on('connection', (ws, req) => {
+  console.log('🔌 WebSocket client connected');
+
+  // сразу отправим сообщение
+  ws.send(
+    JSON.stringify({
+      type: 'technical',
+      message: '👋 WebSocket connection established',
+    })
+  );
+
+  const interval = setInterval(() => {
+    ws.send(
+      JSON.stringify({
+        type: 'notification',
+        message: '🔔 Hardcoded notification from WS server',
+        timestamp: Date.now(),
+      })
+    );
+  }, 10000);
+
+  ws.on('message', (message) => {
+    console.log('📩 Message from client:', message.toString());
+  });
+
+  ws.on('close', () => {
+    console.log('❌ WebSocket client disconnected');
+    clearInterval(interval);
+  });
+});
+
+/* ========================
+   Start server
+======================== */
+
+server.listen(PORT, () => {
+  console.log(`HTTP server running on http://localhost:${PORT}`);
+  console.log(`WebSocket server running on ws://localhost:${PORT}`);
 });

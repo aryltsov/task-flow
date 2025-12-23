@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { taskService } from '@services/task.service';
-import type { ProjectInterface } from '@models/project.interface.ts';
+import { projectService } from '@services/projects.service';
+import type { ProjectInterface } from '@models/project.interface';
 import type { Task } from '@models/task.interface';
-import { projectService } from '@services/projects.service.ts';
 
-// todo split into separate stores (task and projects)
+// todo split into separate stores (task and projects)?
 type BoardState = {
   projects: ProjectInterface[];
   activeProjectId: string | null;
@@ -19,10 +19,12 @@ type BoardState = {
   setProjects: (projects: ProjectInterface[]) => void;
   setActiveProjectId: (id: string | null) => void;
   dropActiveProject: () => void;
+
   fetchProjects: () => Promise<void>;
   fetchActiveProject: (id: string) => Promise<void>;
   fetchTasksByProject: (projectId: string) => Promise<void>;
   fetchTaskById: (id: string) => Promise<void>;
+  updateProject: (project: ProjectInterface) => void; // <- добавили
 };
 
 export const useBoardStore = create<BoardState>((set, get) => ({
@@ -37,13 +39,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   loadingProjects: false,
 
   setProjects: (projects) => set({ projects }),
-  setActiveProjectId: (id) => {
-    set({ activeProjectId: id });
-  },
-
-  dropActiveProject: () => {
-    set({ activeProjectId: null, activeProject: null });
-  },
+  setActiveProjectId: (id) => set({ activeProjectId: id }),
+  dropActiveProject: () => set({ activeProjectId: null, activeProject: null }),
 
   fetchProjects: async () => {
     set({ loadingProjects: true });
@@ -70,7 +67,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     try {
       const tasks = await taskService.getTasksByProject(projectId);
       set({ tasks, loadingTasks: false });
-    } catch (e) {
+    } catch {
       set({ loadingTasks: false });
     }
   },
@@ -80,14 +77,15 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     try {
       const tasks = get().tasks;
       let currentTask = tasks.find((t) => t.id === taskId) || null;
-
-      if (!currentTask) {
-        currentTask = await taskService.getTaskById(taskId);
-      }
-
+      if (!currentTask) currentTask = await taskService.getTaskById(taskId);
       set({ currentTask, loadingTask: false });
     } catch {
       set({ loadingTask: false });
     }
+  },
+
+  updateProject: (project) => {
+    const projects = get().projects.map((p) => (p.id === project.id ? project : p));
+    set({ projects, activeProject: project });
   },
 }));
