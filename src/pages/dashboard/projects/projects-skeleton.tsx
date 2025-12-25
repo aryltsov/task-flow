@@ -18,13 +18,17 @@ function ProjectCardSkeleton() {
   );
 }
 
-export default function ProjectsSkeleton() {
+type ProjectsSkeletonProps = {
+  cardsNumber?: number;
+  withTitle?: boolean;
+};
+export default function ProjectsSkeleton({ cardsNumber = 8, withTitle = true }: ProjectsSkeletonProps) {
   return (
     <div className='p-4'>
-      <div className='h-7 mb-5 w-32 bg-base-300 rounded animate-pulse' />
+      {withTitle && <div className='h-7 mb-5 w-32 bg-base-300 rounded animate-pulse' />}
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-        {Array.from({ length: 8 }).map((_, i) => (
+        {Array.from({ length: cardsNumber }).map((_, i) => (
           <ProjectCardSkeleton key={i} />
         ))}
       </div>

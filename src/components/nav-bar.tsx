@@ -23,11 +23,11 @@ export default function NavBar({ onSidebarToggle, sidebarOpen }: NavBarProps) {
     const ws = new WebSocket(WSServerURL);
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (data.type !== 'technical') showToast(data.message, 'success');
+      if (data.type !== 'technical') showToast(data.message);
     };
 
-    ws.onopen = () => showToast('Notification is ON', 'success');
-    ws.onclose = () => showToast('Notification is OFF', 'success');
+    ws.onopen = () => showToast('Notification is ON');
+    ws.onclose = () => showToast('Notification is OFF');
 
     return () => ws.close();
   }, [isBellActive]);

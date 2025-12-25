@@ -1,16 +1,25 @@
-import { collection, getDocs, getDoc, doc, setDoc } from 'firebase/firestore';
+import { collection, getDocs, getDoc, doc, setDoc, QueryDocumentSnapshot, query, orderBy, startAfter, limit } from 'firebase/firestore';
 import { db } from '../firebase';
 import type { ProjectInterface } from '@models/project.interface';
 
 const COLLECTION_NAME = 'projects';
+const PAGE_SIZE = 18;
 
 export const projectService = {
-  getProjects: async (): Promise<ProjectInterface[]> => {
-    const snapshot = await getDocs(collection(db, COLLECTION_NAME));
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as ProjectInterface[];
+  fetchProjectsPage: async (lastDoc?: QueryDocumentSnapshot) => {
+    let q = query(collection(db, COLLECTION_NAME), orderBy('createdAt', 'desc'), limit(PAGE_SIZE));
+
+    if (lastDoc) {
+      q = query(q, startAfter(lastDoc));
+    }
+
+    const snapshot = await getDocs(q);
+
+    return {
+      items: snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as ProjectInterface),
+      lastDoc: snapshot.docs.at(-1),
+      hasMore: snapshot.size === PAGE_SIZE,
+    };
   },
 
   getProjectById: async (projectId: string): Promise<ProjectInterface | null> => {

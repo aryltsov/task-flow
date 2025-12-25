@@ -5,6 +5,7 @@ import { useMetaStore } from '@stores/meta.store';
 import { AuthProvider } from '@contexts/auth.context';
 import { ModalProvider } from '@providers/modal.provider.tsx';
 import { ToastProvider } from '@contexts/toast-context.tsx';
+import { ErrorBoundary } from '@pages/error-boundary.tsx';
 
 function App() {
   const { fetchMeta } = useMetaStore();
@@ -17,9 +18,11 @@ function App() {
     <AuthProvider>
       <ModalProvider>
         <ToastProvider>
-          <div className='min-h-screen min-w-screen'>
-            <Outlet />
-          </div>
+          <ErrorBoundary>
+            <div className='min-h-screen min-w-screen'>
+              <Outlet />
+            </div>
+          </ErrorBoundary>
         </ToastProvider>
       </ModalProvider>
     </AuthProvider>

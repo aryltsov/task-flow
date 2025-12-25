@@ -1,5 +1,4 @@
-import type { User } from '@models/user.interface.ts';
-import type { Credentials } from '@models/credentials.ts';
+import type { User, Credentials } from '@models';
 
 export interface AuthContextType {
   user: User | null;

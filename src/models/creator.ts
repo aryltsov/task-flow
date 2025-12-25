@@ -9,7 +9,7 @@ export type Creator = {
 
 export type Assignee = Creator;
 
-// todo implement normalization
+// todo remove hardcode, replace with factory
 export class CreatorClass implements Creator {
   id: string;
   name: string;
