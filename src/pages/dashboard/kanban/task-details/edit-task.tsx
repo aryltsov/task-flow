@@ -8,6 +8,7 @@ type TaskEditProps = {
   onCancel: () => void;
 };
 
+/* This code is not done due to lack of time. No sense to review it */
 export default function EditTask({ task, onSave, onCancel }: TaskEditProps) {
   const [taskCopy, setTaskCopy] = useState<Task>({ ...task });
 

@@ -17,7 +17,6 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose, children }) => {
     <div className={`drawer lg:drawer-open`}>
       <input id='dashboard-sidebar' type='checkbox' className='drawer-toggle' checked={open} onChange={onClose} readOnly />
       <div className='drawer-content'>
-        {/* Main content */}
         {children}
       </div>
       <div className='drawer-side !z-20'>
@@ -27,9 +26,6 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose, children }) => {
             <ul>
               <li>
                 <Link to='/dashboard/projects'>Projects</Link>
-              </li>
-              <li>
-                <Link to='/'>Settings</Link>
               </li>
             </ul>
           </div>

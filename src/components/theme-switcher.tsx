@@ -39,7 +39,6 @@ export default function ThemeSwitcher() {
       className='btn btn-ghost btn-sm btn-circle tooltip tooltip-bottom'
       data-tip={theme === THEMES.DARK ? 'Dark' : 'Light'}>
       {theme === THEMES.DARK ? (
-        // TODO move to icon folder
         <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' viewBox='0 0 24 24' fill='none' stroke='currentColor'>
           <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z' />
         </svg>

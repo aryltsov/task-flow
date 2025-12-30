@@ -1,6 +1,6 @@
 function TaskDetailsSkeleton() {
   return (
-    <div className='w-full max-w-lg mx-auto animate-pulse space-y-6'>
+    <div className='w-full min-w-[500px] max-w-lg mx-auto animate-pulse space-y-6'>
       <div className='h-14 w-3/4 mt-3 bg-base-300 rounded' />
 
       <div className='h-4 w-full bg-base-300 rounded' />

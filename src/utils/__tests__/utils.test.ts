@@ -29,6 +29,6 @@ describe('formatCreatedAt', () => {
 
   it('should default to current date if no argument', () => {
     const result = formatCreatedAt();
-    expect(result).toContain('at'); // минимальная проверка, что строка вернулась
+    expect(result).toContain('at');
   });
 });

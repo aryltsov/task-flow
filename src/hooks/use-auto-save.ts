@@ -6,8 +6,8 @@ type UseAutoSaveOptions<T> = {
   interval?: number;
   enabled?: boolean;
 };
-
-export function useAutoSave<T>({ data, onSave, interval = 30_000, enabled = true }: UseAutoSaveOptions<T>) {
+const INTERVAL = 30_000;
+export function useAutoSave<T>({ data, onSave, interval = INTERVAL, enabled = true }: UseAutoSaveOptions<T>) {
   const lastSavedRef = useRef<T>(data);
   const savingRef = useRef(false);
 

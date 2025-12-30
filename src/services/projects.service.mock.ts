@@ -7,9 +7,11 @@ const mockProjects: ProjectInterface[] = [
     description: 'Описание проекта A',
     wiki: 'Wiki A',
     status: 'active',
-    creator: { id: 'alice', name: 'Alice' },
+    creator: {
+      id: 'alice', name: 'Alice',
+      email: '',
+    },
     createdAt: '2023-01-01T00:00:00Z',
-    searchIndex: ['project', 'a', 'alice'],
   },
   {
     id: '2',
@@ -17,9 +19,11 @@ const mockProjects: ProjectInterface[] = [
     description: 'Описание проекта B',
     wiki: 'Wiki B',
     status: 'archived',
-    creator: { id: 'bob', name: 'Bob' },
+    creator: {
+      id: 'bob', name: 'Bob',
+      email: '',
+    },
     createdAt: '2023-01-02T00:00:00Z',
-    searchIndex: ['project', 'b', 'bob'],
   },
   {
     id: '3',
@@ -27,16 +31,16 @@ const mockProjects: ProjectInterface[] = [
     description: 'Описание проекта C',
     wiki: 'Wiki C',
     status: 'active',
-    creator: { id: 'bob', name: 'Bob' },
+    creator: {
+      id: 'bob', name: 'Bob',
+      email: '',
+    },
     createdAt: '2023-01-03T00:00:00Z',
-    searchIndex: ['project', 'c', 'bob'],
   },
 ];
 
 export const projectServiceMock = {
   fetchProjectsPage: async ({ filters } = {}) => {
-    // eslint-disable-next-line no-console
-    console.log('MOCK fetchProjectsPage called', filters);
     let items = mockProjects;
     if (filters?.status) {
       items = items.filter(p => p.status === filters.status);

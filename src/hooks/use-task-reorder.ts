@@ -4,6 +4,7 @@ import type { DropResult } from '@hello-pangea/dnd';
 
 /**
  * in real life we don't need this, we would only make a request with tasks, status and sortIndex
+ * that's why this code as ugly and not covered by tests
  */
 export const useTaskReorder = () => {
   return useCallback((tasks: Task[], result: DropResult): Task[] => {

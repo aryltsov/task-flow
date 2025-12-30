@@ -13,7 +13,7 @@ type TaskDetailsProps = {
   onClose: () => void;
 };
 
-function TaskDetails({ taskId, onClose }: TaskDetailsProps) {
+export default function TaskDetails({ taskId, onClose }: TaskDetailsProps) {
   const { currentTask: task, loadingTask, fetchTaskById } = useBoardStore();
   const auth: AuthContextType = useAuth();
   const [edit, setEdit] = useState(false);
@@ -45,5 +45,3 @@ function TaskDetails({ taskId, onClose }: TaskDetailsProps) {
     );
   }
 }
-
-export default TaskDetails;

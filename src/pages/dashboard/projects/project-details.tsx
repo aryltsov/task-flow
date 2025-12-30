@@ -33,6 +33,8 @@ export default function ProjectDetails({ projectId, isNew, onClose }: ProjectDet
         creator: {
           id: auth.user!.uid,
           email: auth.user!.email,
+          // Since I don't have a real API that would return user data after authorization,
+          // I hardcoded some of the data. This shouldn't happen in a real project, of course.
           name: 'Ryltsov Anton',
           avatarUrl: 'https://lh3.googleusercontent.com/a/ACg8ocLPgen7KROmMikMXoAa1d-vE00v-tdtPgoYa0BU-I9ukUzy3P7y=s576-c-no',
         },
@@ -70,7 +72,7 @@ export default function ProjectDetails({ projectId, isNew, onClose }: ProjectDet
         setProject(createdProject);
         showToast('Project created');
       } else {
-        await useBoardStore.getState().updateProject(res);
+        useBoardStore.getState().updateProject(res);
         setProject(res);
         showToast('Project updated');
       }

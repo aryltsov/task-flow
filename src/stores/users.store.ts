@@ -22,12 +22,8 @@ export const useUsersStore = create<UsersState>((set, get) => ({
 
     try {
       const users = await getUsersService().getAll();
-      // eslint-disable-next-line no-console
-      console.log('useUsersStore.fetchUsers: loaded users:', users);
       set({ users, loading: false, loaded: true });
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log('useUsersStore.fetchUsers: error', err);
       set({ loading: false });
     }
   },

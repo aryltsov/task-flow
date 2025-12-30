@@ -2,7 +2,7 @@ type TaskEditProps = {
   extended: boolean;
   onEdit: (res: any) => void;
   onClose: () => void;
-  onDelete: () => void;
+  onDelete?: () => void;
 };
 
 export default function ModalButtons({ extended, onEdit, onClose, onDelete }: TaskEditProps) {

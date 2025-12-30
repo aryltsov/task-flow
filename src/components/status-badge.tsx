@@ -1,3 +1,4 @@
+// todo replace hardcoded with dynamic values from meta srote
 const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   backlog: { label: 'Backlog', cls: 'badge-ghost' },
   todo: { label: 'To do', cls: 'badge-neutral' },
@@ -5,7 +6,7 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   done: { label: 'Done', cls: 'badge-success' },
   blocked: { label: 'Blocked', cls: 'badge-error' },
 };
-// todo replace hardcode with dynamic values
+
 type StatusBadgeProps = {
   status?: string;
 };

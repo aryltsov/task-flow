@@ -22,7 +22,6 @@ describe('useBoardSections', () => {
     );
 
     const tasks = [{ id: '1', status: 'todo', title: 'Task 1' } as Task, { id: '2', status: 'done', title: 'Task 2' } as Task];
-
     const { result } = renderHook(() => useBoardSections(tasks));
 
     expect(result.current).toEqual({
@@ -39,7 +38,6 @@ describe('useBoardSections', () => {
     );
 
     const { result } = renderHook(() => useBoardSections([]));
-
     expect(result.current).toEqual({});
   });
 });

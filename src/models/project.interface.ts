@@ -9,7 +9,4 @@ export interface ProjectInterface {
   status: ProjectStatus;
   creator: Creator;
   createdAt: string;
-
-  /** for firebase search only. It turns out that Firebase can't do search and filtering properly without searchIndex. */
-  searchIndex: string[];
 }

@@ -7,7 +7,7 @@ import ProjectDetails from '@pages/dashboard/projects/project-details.tsx';
 export default function ProjectModalController() {
   const { projectId } = useParams<{ projectId: string }>();
   const isNew = location.pathname.includes(ROUTE_PATTERNS.projects.new);
-  const isView = location.pathname.startsWith('/dashboard/projects') && !!projectId;
+  const isView = location.pathname.startsWith(ROUTE_PATTERNS.dashboard.projects.root) && !!projectId;
   const navigate = useNavigate();
   const { openModal, closeModal } = useModal();
 
