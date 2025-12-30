@@ -6,7 +6,19 @@ import pluginReact from 'eslint-plugin-react';
 import pluginPrettier from 'eslint-plugin-prettier';
 import { defineConfig } from 'eslint/config';
 
+import pluginCypress from 'eslint-plugin-cypress';
 export default defineConfig([
+  // Cypress e2e tests
+  {
+    files: ['cypress/**/*.js', 'cypress/**/*.ts'],
+    languageOptions: {
+      parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
+      globals: { ...globals.browser, ...globals.cypress },
+    },
+    plugins: { cypress: pluginCypress },
+    extends: ['plugin:cypress/recommended'],
+    rules: {},
+  },
   {
     files: ['**/*.{js,ts,jsx,tsx}'],
     languageOptions: {

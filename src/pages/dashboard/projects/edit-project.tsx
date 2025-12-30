@@ -1,11 +1,12 @@
 import type { ProjectInterface } from '@models/project.interface';
 import FormInput from '@components/form-input';
 import FormTextarea from '@components/form-textarea';
-import { useProjectForm } from '@pages/dashboard/projects/use-project-form.ts';
+import { useProjectForm } from '@pages/dashboard/projects/use-project-form';
+import { useAutoSave } from '@hooks/use-auto-save';
 
 type ProjectEditProps = {
   project: ProjectInterface;
-  onSave: (project: ProjectInterface) => void;
+  onSave: (project: ProjectInterface, isAutosave?: boolean) => void;
   onCancel: () => void;
 };
 
@@ -15,7 +16,7 @@ export default function EditProject({ project, onSave, onCancel }: ProjectEditPr
       title: project.title || '',
       status: project.status || 'active',
       description: project.description || '',
-      wiki: project.wiki ?? '',
+      wiki: project.wiki || '',
     },
     async (values) => {
       onSave({
@@ -24,6 +25,17 @@ export default function EditProject({ project, onSave, onCancel }: ProjectEditPr
       });
     }
   );
+
+  const draftProject: ProjectInterface = {
+    ...project,
+    ...form,
+  };
+
+  useAutoSave({
+    data: draftProject,
+    enabled: isFormValid && !loading,
+    onSave: async (updatedProject) => onSave(updatedProject, true),
+  });
 
   return (
     <div className='w-[700px] max-h-[80vh] flex flex-col'>

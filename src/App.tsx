@@ -16,15 +16,15 @@ function App() {
 
   return (
     <AuthProvider>
-      <ModalProvider>
-        <ToastProvider>
+      <ToastProvider>
+        <ModalProvider>
           <ErrorBoundary>
             <div className='min-h-screen min-w-screen'>
               <Outlet />
             </div>
           </ErrorBoundary>
-        </ToastProvider>
-      </ModalProvider>
+        </ModalProvider>
+      </ToastProvider>
     </AuthProvider>
   );
 }

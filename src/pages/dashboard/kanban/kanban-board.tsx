@@ -1,64 +1,38 @@
 import { DragDropContext, type DropResult } from '@hello-pangea/dnd';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { produce } from 'immer';
-import Column from './column';
-import KanbanBoardSkeleton from './kanban-board-skeleton';
 import { useBoardStore } from '@stores/board.store';
 import { useBoardSections } from '@hooks/use-board-sections';
-
-import type { BoardSections } from '@models/board-sections';
+import { useTaskReorder } from '@hooks/use-task-reorder';
+import Column from './column';
+import KanbanBoardSkeleton from './kanban-board-skeleton';
 
 const KanbanBoard = () => {
   const { projectId } = useParams<{ projectId: string }>();
-  const { setActiveProjectId, fetchActiveProject, fetchTasksByProject, dropActiveProject, tasks, loadingTasks } = useBoardStore();
+  const { filteredTasks, fetchActiveProject, fetchTasksByProject, setActiveProjectId, dropActiveProject, loadingTasks, updateTasksOrder } = useBoardStore();
+  const boardSections = useBoardSections(filteredTasks);
+  const reorderTasks = useTaskReorder();
 
   useEffect(() => {
     if (!projectId) return;
-
     setActiveProjectId(projectId);
     fetchActiveProject(projectId);
     fetchTasksByProject(projectId);
-
     return () => dropActiveProject();
   }, [projectId]);
 
-  const baseBoardSections = useBoardSections(tasks);
-  const [boardSections, setBoardSections] = useState<BoardSections>({});
-
-  useEffect(() => {
-    setBoardSections(baseBoardSections);
-  }, [baseBoardSections]);
-
-  const onDragEnd = ({ source, destination }: DropResult) => {
-    // todo add api to update ticket status
-    if (!destination) return;
-    if (source.droppableId === destination.droppableId && source.index === destination.index) {
-      return;
-    }
-
-    setBoardSections((board) =>
-      produce(board, (draft) => {
-        const sourceList = draft[source.droppableId];
-        const destList = draft[destination.droppableId];
-
-        const [moved] = sourceList.splice(source.index, 1);
-        destList.splice(destination.index, 0, moved);
-      })
-    );
+  const onDragEnd = async (result: DropResult) => {
+    const updatedTasks = reorderTasks(filteredTasks, result);
+    await updateTasksOrder(updatedTasks);
   };
 
-  if (loadingTasks) {
-    return <KanbanBoardSkeleton />;
-  }
+  if (loadingTasks) return <KanbanBoardSkeleton />;
 
-  // todo fix 'Droppable: unsupported nested scroll...'
-  // todo fix drop into empty column
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className='flex gap-3 w-fit h-full'>
         {Object.entries(boardSections).map(([columnId, tasks]) => (
-          <Column key={columnId} id={columnId} title={columnId} tasks={tasks} />
+          <Column key={columnId} id={columnId} title={columnId} tasks={tasks.slice().sort((a, b) => (a.sortIndex ?? 0) - (b.sortIndex ?? 0))} />
         ))}
       </div>
     </DragDropContext>

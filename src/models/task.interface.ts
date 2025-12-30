@@ -12,4 +12,5 @@ export interface Task {
   assignee: Assignee | null;
   dueDate?: Date;
   comments: Comment[];
+  sortIndex?: number;
 }

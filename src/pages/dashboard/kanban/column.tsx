@@ -18,7 +18,7 @@ const Column = ({ id, title, tasks }: BoardSectionProps) => {
 
       <Droppable droppableId={id} type='TASK'>
         {(provided) => (
-          <div ref={provided.innerRef} {...provided.droppableProps} className='flex flex-col gap-2'>
+          <div ref={provided.innerRef} {...provided.droppableProps} className='flex flex-col gap-2 min-h-full'>
             {tasks.map((task, index) => (
               <Draggable key={task.id} draggableId={task.id} index={index}>
                 {(provided) => (

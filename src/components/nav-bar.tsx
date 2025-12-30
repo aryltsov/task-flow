@@ -1,9 +1,12 @@
-import { Link } from 'react-router-dom';
+import { Link, useMatch } from 'react-router-dom';
 import ThemeSwitcher from '@components/theme-switcher.tsx';
 import { useBoardStore } from '@stores/board.store.ts';
 import { useEffect, useState } from 'react';
 import { Bell, BellOff } from 'lucide-react';
 import { useToast } from '@contexts/toast-context.tsx';
+import { ROUTE_PATTERNS } from '@routes/paths.ts';
+import TaskFilter from '@components/task-filter.tsx';
+import ProjectFilter from '@components/project-filter.tsx';
 
 type NavBarProps = {
   onSidebarToggle?: () => void;
@@ -13,6 +16,7 @@ type NavBarProps = {
 const WSServerURL = 'ws://localhost:4000';
 
 export default function NavBar({ onSidebarToggle, sidebarOpen }: NavBarProps) {
+  const isTasksPage = useMatch(ROUTE_PATTERNS.dashboard.projects.tasks.root);
   const { activeProject } = useBoardStore();
   const [isBellActive, setIsBellActive] = useState(false);
   const { showToast } = useToast();
@@ -54,6 +58,7 @@ export default function NavBar({ onSidebarToggle, sidebarOpen }: NavBarProps) {
         </div>
 
         <div className='flex items-center justify-end gap-3'>
+          {isTasksPage ? <TaskFilter /> : <ProjectFilter />}
           <button
             type='button'
             onClick={() => setIsBellActive((prev) => !prev)}
@@ -62,7 +67,7 @@ export default function NavBar({ onSidebarToggle, sidebarOpen }: NavBarProps) {
               transition-all duration-200
               ${isBellActive ? 'text-warning animate-pulse' : 'text-base-content/40'}
             `}
-            title={isBellActive ? 'Отключить уведомления' : 'Включить уведомления'}>
+            title={isBellActive ? 'Notifications OFF' : 'Notifications ON'}>
             {isBellActive ? <Bell className='w-5 h-5' /> : <BellOff className='w-5 h-5' />}
           </button>
 
